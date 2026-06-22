@@ -273,12 +273,12 @@ html,body{height:100%;font-family:'Inter',sans-serif;background:#F0EFED;color:va
 // DATA
 // ─────────────────────────────────────────────
 const MODELS = {
-  flip_light: {
-    name: 'Cavaletti Flip Light',
-    series: 'Série Flip · Linha operacional',
+  flip: {
+    name: 'Cavaletti Flip',
+    series: 'Série Flip · Linha operacional/executiva',
     icon: '🪑',
     // ⚙️ SUBSTITUA pelo caminho do seu vídeo:
-    video: 'videos/flip-light.mp4',
+    video: 'flip.mp4',
     certs: ['NBR 13962 ✓', 'Conforme NR-17', 'Garantia 6 anos'],
     pills: ['NBR 13962 ✓', 'NR-17', '6 anos garantia', 'Até 110 kg'],
     anns: [
@@ -292,13 +292,13 @@ const MODELS = {
       'Apoio lombar ajustável — atende NR-17 para jornadas de até 6h contínuas',
       'Certificada em laboratório SENAI: ensaios de estabilidade, resistência e durabilidade',
     ],
-    wpp_text: 'Olá, fiz o quiz de cadeiras e recebi a indicação da Cavaletti Flip Light. Gostaria de verificar condições para minha empresa.',
+    wpp_text: 'Olá, fiz o quiz de cadeiras e recebi a indicação da Cavaletti Flip. Gostaria de verificar condições para minha empresa.',
   },
   yon: {
     name: 'Cavaletti Yon',
     series: 'Série Yon · Linha executiva/operacional',
     icon: '🪑',
-    video: 'videos/yon.mp4',
+    video: 'yon.mp4',
     certs: ['NBR 13962 ✓', 'Conforme NR-17', 'Garantia 6 anos'],
     pills: ['NBR 13962 ✓', 'Braço 4D', 'Tela integral', 'NR-17'],
     anns: [
@@ -318,7 +318,7 @@ const MODELS = {
     name: 'Cavaletti Vélo',
     series: 'Série Vélo · Linha executiva slim',
     icon: '🪑',
-    video: 'videos/velo.mp4',
+    video: 'velo.mp4',
     certs: ['NBR 13962 ✓', 'Conforme NR-17', 'Garantia 6 anos'],
     pills: ['NBR 13962 ✓', 'Assento deslizante', 'Lombar auto', 'Design premiado'],
     anns: [
@@ -335,10 +335,10 @@ const MODELS = {
     wpp_text: 'Olá, fiz o quiz de cadeiras e recebi a indicação da Cavaletti Vélo. Gostaria de verificar condições para minha empresa.',
   },
   bari: {
-    name: 'Linha Bariatrica Cavaletti',
+    name: 'Solução Especial Bariatrica',
     series: 'Conforme ABNT NBR 9050:2020',
     icon: '🪑',
-    video: 'videos/bari.mp4',
+    video: 'yon.mp4', // sem vídeo específico — usa Yon como visual
     certs: ['NBR 9050 ✓', 'Até 250 kg', 'Laudo INMETRO'],
     pills: ['NBR 9050 ✓', 'Até 250 kg', 'Base reforçada 80 cm', 'Laudo INMETRO'],
     anns: [
@@ -352,7 +352,7 @@ const MODELS = {
       'Capacidade de carga mínima de 250 kg com laudo técnico em laboratório credenciado pelo INMETRO — não apenas estrutura reforçada',
       'Projeto mecânico e ergonômico específico para morfologia de usuários com sobrepeso: encosto não reclinável por segurança, braços móveis em 6 posições',
     ],
-    wpp_text: 'Olá, fiz o quiz de cadeiras e recebi a indicação da Linha Bariatrica. Gostaria de verificar condições e modelos disponíveis para minha empresa.',
+    wpp_text: 'Olá, fiz o quiz de cadeiras e preciso de cadeiras para usuários acima de 110 kg (linha especial NBR 9050). Gostaria de verificar condições e modelos disponíveis.',
   },
 };
 
@@ -362,7 +362,7 @@ const QUESTIONS = [
     title: 'Qual o porte predominante dos colaboradores que vão usar as cadeiras?',
     opts: [
       { label: 'Biotipo padrão', sub: 'Altura 1,52–1,92 m · Até 110 kg · Maioria dos usuários', tag: 'std' },
-      { label: 'Usuários acima de 110 kg', sub: 'Exige linha bariatrica — ABNT NBR 9050, não NBR 13962', tag: 'bari' },
+      { label: 'Usuários acima de 110 kg', sub: 'Exige solução especial NBR 9050 — nosso consultor indica o modelo certo', tag: 'bari' },
       { label: 'Equipe mista', sub: 'Mix de biotipos — recomendaremos o modelo com maior range de ajuste', tag: 'std' },
     ]
   },
@@ -414,8 +414,8 @@ function computeModel(answers) {
   // Jornada
   const jornada = answers[1] ? answers[1].tag : null;
   const uso = answers[2] ? answers[2].tag : null;
-  if (jornada === '4h' && uso === 'home') return 'flip_light';
-  if (jornada === '4h' || jornada === '6h') return 'flip_light';
+  if (jornada === '4h' && uso === 'home') return 'flip';
+  if (jornada === '4h' || jornada === '6h') return 'flip';
   if (jornada === '8h+' || uso === 'exec') return 'velo';
   if (jornada === '8h') return 'yon';
   return 'yon';

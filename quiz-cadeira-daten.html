@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz — Qual cadeira é ideal para sua empresa? | Daten Móveis</title>
+<meta name="description" content="Ferramenta técnica baseada na ABNT NBR 13962 e NR-17. Encontre a cadeira Cavaletti ideal para seu escritório em 4 perguntas.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --orange:#FF6B35;
+  --orange-dim:rgba(255,107,53,0.15);
+  --orange-border:rgba(255,107,53,0.35);
+  --black:#1A1A1A;
+  --panel:#111111;
+  --white:#FFFFFF;
+  --gray:#F5F5F5;
+  --text:#1A1A1A;
+  --text-muted:#6B6B6B;
+  --border:#E5E5E5;
+  --radius:10px;
+}
+html,body{height:100%;font-family:'Inter',sans-serif;background:#F0EFED;color:var(--text)}
+
+/* ── TOP BAR ── */
+.topbar{
+  background:var(--black);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0.6rem 2rem;
+  position:sticky;top:0;z-index:100;
+}
+.topbar-logo{font-family:'DM Sans',sans-serif;font-weight:600;font-size:15px;color:var(--white);letter-spacing:0.02em}
+.topbar-logo span{color:var(--orange)}
+.topbar-badge{
+  display:flex;align-items:center;gap:6px;
+  font-size:11px;color:rgba(255,255,255,0.6);
+  border:0.5px solid rgba(255,255,255,0.15);
+  border-radius:20px;padding:4px 12px;
+}
+.topbar-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--orange);flex-shrink:0}
+
+/* ── MAIN SPLIT ── */
+.split{display:grid;grid-template-columns:1fr 1fr;min-height:calc(100vh - 41px)}
+
+/* ── LEFT PANEL ── */
+.left{
+  background:var(--white);
+  padding:2.5rem 2rem;
+  display:flex;flex-direction:column;
+  overflow-y:auto;
+}
+
+/* progress */
+.progress-wrap{margin-bottom:2rem}
+.progress-label{font-size:11px;color:var(--text-muted);margin-bottom:8px;font-family:'DM Sans',sans-serif;letter-spacing:0.06em;text-transform:uppercase}
+.progress-bar{display:flex;gap:6px}
+.pb{flex:1;height:3px;border-radius:2px;background:#E8E8E8;transition:background 0.3s}
+.pb.done{background:var(--orange)}
+.pb.active{background:rgba(255,107,53,0.4)}
+
+/* abnt layer */
+.layer-tag{
+  display:inline-flex;align-items:center;gap:7px;
+  background:var(--orange-dim);border:0.5px solid var(--orange-border);
+  border-radius:6px;padding:6px 12px;margin-bottom:1.25rem;width:fit-content;
+}
+.layer-tag-dot{width:5px;height:5px;border-radius:50%;background:var(--orange);animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+.layer-tag span{font-size:11px;color:var(--orange);font-weight:500;font-family:'DM Sans',sans-serif;letter-spacing:0.04em}
+
+/* question */
+.question-title{font-family:'DM Sans',sans-serif;font-size:20px;font-weight:600;line-height:1.3;margin-bottom:1.5rem;color:var(--black)}
+
+/* options */
+.options{display:flex;flex-direction:column;gap:10px;margin-bottom:auto;padding-bottom:1.5rem}
+.opt{
+  border:1.5px solid var(--border);border-radius:var(--radius);
+  padding:1rem 1.1rem;cursor:pointer;
+  display:flex;align-items:flex-start;gap:12px;
+  transition:border-color 0.15s,background 0.15s;
+  background:var(--white);
+}
+.opt:hover{border-color:rgba(255,107,53,0.4);background:#FFF9F7}
+.opt.selected{border-color:var(--orange);background:#FFF5F1}
+.opt-radio{
+  width:18px;height:18px;border-radius:50%;border:2px solid #D0D0D0;
+  flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;
+  transition:border-color 0.15s;
+}
+.opt.selected .opt-radio{border-color:var(--orange);background:var(--orange)}
+.opt.selected .opt-radio::after{content:'';width:6px;height:6px;border-radius:50%;background:#fff}
+.opt-content{}
+.opt-label{font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;color:var(--black);margin-bottom:2px}
+.opt-sub{font-size:12px;color:var(--text-muted);line-height:1.5}
+
+/* nav */
+.nav-row{display:flex;gap:10px;margin-top:1.5rem}
+.btn-back{
+  background:transparent;border:1.5px solid var(--border);border-radius:var(--radius);
+  padding:0.75rem 1.25rem;font-size:14px;font-family:'DM Sans',sans-serif;font-weight:500;
+  color:var(--text-muted);cursor:pointer;transition:border-color 0.15s;
+}
+.btn-back:hover{border-color:#999}
+.btn-next{
+  flex:1;background:var(--orange);border:none;border-radius:var(--radius);
+  padding:0.75rem 1.5rem;font-size:14px;font-family:'DM Sans',sans-serif;font-weight:600;
+  color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;
+  transition:opacity 0.15s;
+}
+.btn-next:disabled{opacity:0.35;cursor:not-allowed}
+.btn-next:not(:disabled):hover{opacity:0.9}
+.arrow{font-size:16px}
+
+/* ── RIGHT PANEL ── */
+.right{background:var(--panel);position:relative;overflow:hidden;display:flex;flex-direction:column}
+
+/* scan line */
+.scan-line{
+  position:absolute;left:0;right:0;height:1.5px;
+  background:linear-gradient(90deg,transparent 0%,var(--orange) 30%,var(--orange) 70%,transparent 100%);
+  opacity:0;animation:scan 3s ease-in-out infinite;z-index:5;pointer-events:none;
+}
+@keyframes scan{0%{top:10%;opacity:0}15%{opacity:0.5}85%{opacity:0.5}100%{top:90%;opacity:0}}
+
+/* corners */
+.corners{position:absolute;inset:0;pointer-events:none;z-index:5}
+.c{position:absolute;width:20px;height:20px;border-color:var(--orange);border-style:solid;opacity:0.5}
+.c.tl{top:16px;left:16px;border-width:1.5px 0 0 1.5px}
+.c.tr{top:16px;right:16px;border-width:1.5px 1.5px 0 0}
+.c.bl{bottom:16px;left:16px;border-width:0 0 1.5px 1.5px}
+.c.br{bottom:16px;right:16px;border-width:0 1.5px 1.5px 0}
+
+/* video area */
+.video-wrap{
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  overflow:hidden;
+}
+.video-wrap video{width:100%;height:100%;object-fit:cover}
+/* placeholder when no video */
+.video-placeholder{
+  display:flex;flex-direction:column;align-items:center;gap:12px;
+  opacity:0.08;
+}
+.chair-icon{font-size:96px;line-height:1}
+.placeholder-text{font-size:10px;color:#fff;letter-spacing:0.12em;font-family:'DM Sans',sans-serif}
+
+/* annotations */
+.annotations{
+  position:absolute;top:50%;right:1.5rem;transform:translateY(-50%);
+  display:flex;flex-direction:column;gap:8px;z-index:6;
+  transition:opacity 0.4s;
+}
+.ann{
+  display:flex;align-items:center;gap:8px;
+  background:rgba(0,0,0,0.55);border:0.5px solid rgba(255,255,255,0.1);
+  border-radius:6px;padding:6px 10px;
+  transition:all 0.3s;
+}
+.ann.active{border-color:var(--orange-border);background:rgba(255,107,53,0.12)}
+.ann-dot{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,0.2);flex-shrink:0}
+.ann.active .ann-dot{background:var(--orange)}
+.ann-text{font-size:11px;color:rgba(255,255,255,0.4);font-family:'DM Sans',sans-serif;white-space:nowrap}
+.ann.active .ann-text{color:rgba(255,255,255,0.9)}
+
+/* bottom overlay */
+.video-bottom{
+  position:absolute;bottom:0;left:0;right:0;
+  padding:1.5rem;z-index:7;
+  background:linear-gradient(transparent,rgba(0,0,0,0.85));
+}
+.live-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  background:rgba(255,107,53,0.18);border:0.5px solid rgba(255,107,53,0.4);
+  border-radius:20px;padding:3px 10px;margin-bottom:8px;
+}
+.live-dot{width:5px;height:5px;border-radius:50%;background:var(--orange);animation:pulse 1.5s ease-in-out infinite}
+.live-badge span{font-size:10px;color:var(--orange);font-weight:500;font-family:'DM Sans',sans-serif;letter-spacing:0.05em}
+.model-name{font-family:'DM Sans',sans-serif;font-size:18px;font-weight:600;color:#fff;margin-bottom:6px;transition:opacity 0.3s}
+.spec-pills{display:flex;gap:6px;flex-wrap:wrap}
+.spec-pill{
+  font-size:10px;color:rgba(255,255,255,0.45);
+  background:rgba(255,255,255,0.06);border:0.5px solid rgba(255,255,255,0.12);
+  border-radius:20px;padding:3px 9px;font-family:'DM Sans',sans-serif;
+}
+.spec-pill.hi{color:var(--orange);background:rgba(255,107,53,0.1);border-color:rgba(255,107,53,0.3)}
+
+/* ── RESULT SCREEN ── */
+.result-wrap{display:flex;flex-direction:column;gap:0;height:100%}
+.result-left{padding:2.5rem 2rem;background:var(--white);overflow-y:auto;display:flex;flex-direction:column;gap:1.25rem}
+.result-eyebrow{font-size:11px;font-weight:500;color:var(--orange);letter-spacing:0.08em;text-transform:uppercase;font-family:'DM Sans',sans-serif}
+.result-title{font-family:'DM Sans',sans-serif;font-size:22px;font-weight:600;line-height:1.2;color:var(--black)}
+.result-model-card{
+  border:1.5px solid var(--border);border-radius:var(--radius);overflow:hidden;
+}
+.result-model-header{
+  background:var(--black);padding:1.1rem 1.25rem;
+  display:flex;align-items:center;gap:12px;
+}
+.result-model-icon{
+  width:44px;height:44px;border-radius:8px;
+  background:var(--orange-dim);border:0.5px solid var(--orange-border);
+  display:flex;align-items:center;justify-content:center;font-size:22px;
+}
+.result-model-name{font-family:'DM Sans',sans-serif;font-size:16px;font-weight:600;color:#fff}
+.result-model-series{font-size:11px;color:rgba(255,255,255,0.4);margin-top:2px;font-family:'DM Sans',sans-serif}
+.result-model-body{padding:1.1rem 1.25rem}
+.cert-badges{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1rem}
+.cert{font-size:11px;font-weight:500;padding:4px 11px;border-radius:20px;font-family:'DM Sans',sans-serif}
+.cert-abnt{background:rgba(255,107,53,0.1);color:var(--orange);border:0.5px solid var(--orange-border)}
+.cert-nr{background:#F5F5F5;color:#555;border:0.5px solid #E0E0E0}
+.reasons{list-style:none;display:flex;flex-direction:column;gap:9px}
+.reasons li{display:flex;align-items:flex-start;gap:10px;font-size:13px;color:#444;line-height:1.55}
+.reasons li::before{content:'';width:4px;height:4px;border-radius:50%;background:var(--orange);flex-shrink:0;margin-top:6px}
+
+/* cta block */
+.cta-block{display:flex;flex-direction:column;gap:10px}
+.btn-wpp{
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  background:var(--orange);color:#fff;border:none;border-radius:var(--radius);
+  padding:0.9rem 1.5rem;font-size:15px;font-family:'DM Sans',sans-serif;font-weight:600;
+  cursor:pointer;text-decoration:none;transition:opacity 0.15s;
+}
+.btn-wpp:hover{opacity:0.9}
+.btn-showroom{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  background:transparent;color:var(--text-muted);border:1.5px solid var(--border);
+  border-radius:var(--radius);padding:0.75rem 1.5rem;font-size:14px;
+  font-family:'DM Sans',sans-serif;cursor:pointer;text-decoration:none;transition:border-color 0.15s;
+}
+.btn-showroom:hover{border-color:#999}
+.btn-restart{
+  background:transparent;border:none;font-size:13px;color:var(--text-muted);
+  cursor:pointer;font-family:'DM Sans',sans-serif;text-align:center;padding:0.25rem;
+  text-decoration:underline;
+}
+.footer-trust{
+  display:flex;align-items:center;gap:1.5rem;padding-top:0.5rem;
+  border-top:1px solid var(--border);
+}
+.trust-item{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text-muted)}
+
+/* ── MOBILE ── */
+@media(max-width:768px){
+  .split{grid-template-columns:1fr;min-height:auto}
+  .right{min-height:280px;order:-1}
+  .left{padding:1.5rem 1.25rem}
+  .topbar{padding:0.6rem 1.25rem}
+  .topbar-badge{display:none}
+  .annotations{display:none}
+}
+
+/* ── TRANSITIONS ── */
+.screen{display:none;width:100%;height:100%}
+.screen.active{display:flex;flex-direction:row}
+@media(max-width:768px){.screen.active{flex-direction:column}}
+.fade-in{animation:fadeIn 0.25s ease-out}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-logo">Daten <span>Móveis</span></div>
+  <div class="topbar-badge">Representante Autorizado Cavaletti — Paraná · 22 anos</div>
+</div>
+
+<div id="app"></div>
+
+<script>
+// ─────────────────────────────────────────────
+// DATA
+// ─────────────────────────────────────────────
+const MODELS = {
+  flip_light: {
+    name: 'Cavaletti Flip Light',
+    series: 'Série Flip · Linha operacional',
+    icon: '🪑',
+    // ⚙️ SUBSTITUA pelo caminho do seu vídeo:
+    video: 'videos/flip-light.mp4',
+    certs: ['NBR 13962 ✓', 'Conforme NR-17', 'Garantia 6 anos'],
+    pills: ['NBR 13962 ✓', 'NR-17', '6 anos garantia', 'Até 110 kg'],
+    anns: [
+      { text: 'Altura ajustável 420–500 mm', active: true },
+      { text: 'Apoio lombar regulável', active: true },
+      { text: 'Encosto tela respirável', active: false },
+      { text: 'Base 5 pontos nylon', active: false },
+    ],
+    reasons: [
+      'Assento entre 420–500 mm de altura, cobre biotipos de 1,52 m a 1,92 m conforme a NBR 13962:2018',
+      'Apoio lombar ajustável — atende NR-17 para jornadas de até 6h contínuas',
+      'Certificada em laboratório SENAI: ensaios de estabilidade, resistência e durabilidade',
+    ],
+    wpp_text: 'Olá, fiz o quiz de cadeiras e recebi a indicação da Cavaletti Flip Light. Gostaria de verificar condições para minha empresa.',
+  },
+  yon: {
+    name: 'Cavaletti Yon',
+    series: 'Série Yon · Linha executiva/operacional',
+    icon: '🪑',
+    video: 'videos/yon.mp4',
+    certs: ['NBR 13962 ✓', 'Conforme NR-17', 'Garantia 6 anos'],
+    pills: ['NBR 13962 ✓', 'Braço 4D', 'Tela integral', 'NR-17'],
+    anns: [
+      { text: 'Braço 4D ajustável', active: true },
+      { text: 'Syncron — recline automático', active: true },
+      { text: 'Encosto tela integral', active: true },
+      { text: 'NBR 13962 certificada', active: false },
+    ],
+    reasons: [
+      'Braço 4D: ajuste em altura, largura, profundidade e ângulo — obrigatório para jornadas acima de 6h e ambientes de call center (NR-17 Anexo II)',
+      'Mecanismo Syncron com tensão regulável — distribui carga na coluna durante longas jornadas de 8h+',
+      'Certificada NBR 13962 pelo SENAI, aceita em licitações e políticas internas de saúde ocupacional',
+    ],
+    wpp_text: 'Olá, fiz o quiz de cadeiras e recebi a indicação da Cavaletti Yon. Gostaria de verificar condições para minha empresa.',
+  },
+  velo: {
+    name: 'Cavaletti Vélo',
+    series: 'Série Vélo · Linha executiva slim',
+    icon: '🪑',
+    video: 'videos/velo.mp4',
+    certs: ['NBR 13962 ✓', 'Conforme NR-17', 'Garantia 6 anos'],
+    pills: ['NBR 13962 ✓', 'Assento deslizante', 'Lombar auto', 'Design premiado'],
+    anns: [
+      { text: 'Assento deslizante', active: true },
+      { text: 'Lombar automático', active: true },
+      { text: 'Estrutura slim', active: false },
+      { text: 'NBR 13962 certificada', active: false },
+    ],
+    reasons: [
+      'Assento com regulagem de profundidade (deslizante) — indicado para usuários que variam entre postura reclinada e ativa ao longo do dia',
+      'Apoio lombar com regulagem automática conforme movimento do usuário, ideal para jornadas de 6–8h',
+      'Certificada NBR 13962 pelo SENAI: largura mínima de assento 400 mm, encosto mínimo 240 mm, altura 420–500 mm',
+    ],
+    wpp_text: 'Olá, fiz o quiz de cadeiras e recebi a indicação da Cavaletti Vélo. Gostaria de verificar condições para minha empresa.',
+  },
+  bari: {
+    name: 'Linha Bariatrica Cavaletti',
+    series: 'Conforme ABNT NBR 9050:2020',
+    icon: '🪑',
+    video: 'videos/bari.mp4',
+    certs: ['NBR 9050 ✓', 'Até 250 kg', 'Laudo INMETRO'],
+    pills: ['NBR 9050 ✓', 'Até 250 kg', 'Base reforçada 80 cm', 'Laudo INMETRO'],
+    anns: [
+      { text: 'Assento alargado ≥ 500 mm', active: true },
+      { text: 'Base 5 patas Ø 80 cm', active: true },
+      { text: 'Carga até 250 kg', active: true },
+      { text: 'Laudo credenciado INMETRO', active: false },
+    ],
+    reasons: [
+      'Dimensionado pela ABNT NBR 9050:2020 (não NBR 13962): assento alargado, altura fixa entre 410–450 mm, base com 5 patas de diâmetro 80 cm',
+      'Capacidade de carga mínima de 250 kg com laudo técnico em laboratório credenciado pelo INMETRO — não apenas estrutura reforçada',
+      'Projeto mecânico e ergonômico específico para morfologia de usuários com sobrepeso: encosto não reclinável por segurança, braços móveis em 6 posições',
+    ],
+    wpp_text: 'Olá, fiz o quiz de cadeiras e recebi a indicação da Linha Bariatrica. Gostaria de verificar condições e modelos disponíveis para minha empresa.',
+  },
+};
+
+const QUESTIONS = [
+  {
+    layer: 'Camada 1 / 4 — Antropometria',
+    title: 'Qual o porte predominante dos colaboradores que vão usar as cadeiras?',
+    opts: [
+      { label: 'Biotipo padrão', sub: 'Altura 1,52–1,92 m · Até 110 kg · Maioria dos usuários', tag: 'std' },
+      { label: 'Usuários acima de 110 kg', sub: 'Exige linha bariatrica — ABNT NBR 9050, não NBR 13962', tag: 'bari' },
+      { label: 'Equipe mista', sub: 'Mix de biotipos — recomendaremos o modelo com maior range de ajuste', tag: 'std' },
+    ]
+  },
+  {
+    layer: 'Camada 2 / 4 — NR-17 / Jornada',
+    title: 'Quantas horas por dia os colaboradores ficam sentados?',
+    opts: [
+      { label: 'Até 4 horas', sub: 'Uso intermitente ou home office parcial', tag: '4h' },
+      { label: '4 a 6 horas', sub: 'Jornada padrão com pausas regulares', tag: '6h' },
+      { label: '6 a 8 horas', sub: 'Jornada integral — lombar ajustável obrigatório pela NR-17', tag: '8h' },
+      { label: 'Mais de 8 horas', sub: 'NBR 13962 ou NBR 9050 obrigatórias — certificação em laboratório', tag: '8h+' },
+    ]
+  },
+  {
+    layer: 'Camada 3 / 4 — Dimensionamento / Uso',
+    title: 'Qual o ambiente e tipo de trabalho predominante?',
+    opts: [
+      { label: 'Escritório corporativo', sub: 'Gestores, analistas, administrativo', tag: 'office' },
+      { label: 'Call center / telemarketing', sub: 'Aplica NBR 15786 + NR-17 Anexo II: braço ajustável obrigatório', tag: 'call' },
+      { label: 'Home office', sub: 'Uso residencial, jornada variável', tag: 'home' },
+      { label: 'Diretoria / salas executivas', sub: 'Cadeiras de alta performance e design', tag: 'exec' },
+    ]
+  },
+  {
+    layer: 'Camada 4 / 4 — Certificação',
+    title: 'A empresa exige certificação ABNT para a compra?',
+    opts: [
+      { label: 'Sim — licitação pública', sub: 'Exige NBR 13962 certificada em laboratório SENAI ou INMETRO', tag: 'cert_yes' },
+      { label: 'Sim — política interna de saúde ocupacional', sub: 'Exige laudo técnico para comprovação', tag: 'cert_yes' },
+      { label: 'Não obrigatório', sub: 'Conformidade com NR-17 é suficiente', tag: 'cert_no' },
+    ]
+  }
+];
+
+// ─────────────────────────────────────────────
+// STATE
+// ─────────────────────────────────────────────
+let state = { step: 0, answers: [], currentModel: 'yon', isBari: false };
+
+// ─────────────────────────────────────────────
+// LOGIC — determina modelo pelas respostas
+// ─────────────────────────────────────────────
+function computeModel(answers) {
+  if (!answers.length) return 'yon';
+  // Bariatrico?
+  if (answers[0] && answers[0].tag === 'bari') return 'bari';
+  // Call center: Yon (braço 4D obrigatório)
+  if (answers[2] && answers[2].tag === 'call') return 'yon';
+  // Jornada
+  const jornada = answers[1] ? answers[1].tag : null;
+  const uso = answers[2] ? answers[2].tag : null;
+  if (jornada === '4h' && uso === 'home') return 'flip_light';
+  if (jornada === '4h' || jornada === '6h') return 'flip_light';
+  if (jornada === '8h+' || uso === 'exec') return 'velo';
+  if (jornada === '8h') return 'yon';
+  return 'yon';
+}
+
+function updateRightPanel(modelKey) {
+  const m = MODELS[modelKey];
+  if (!m) return;
+  state.currentModel = modelKey;
+
+  // video
+  const vid = document.getElementById('vid');
+  const src = document.getElementById('vid-src');
+  if (vid && src) {
+    src.src = m.video;
+    vid.load();
+    // Se não carregar (placeholder), mostra ícone
+    vid.onerror = () => { vid.style.display='none'; document.getElementById('vid-placeholder').style.display='flex'; };
+    vid.oncanplay = () => { vid.style.display='block'; document.getElementById('vid-placeholder').style.display='none'; };
+  }
+
+  // model name
+  const mn = document.getElementById('model-name');
+  if (mn) { mn.style.opacity='0'; setTimeout(()=>{ mn.textContent=m.name; mn.style.opacity='1'; },200); }
+  mn && (mn.style.transition='opacity 0.2s');
+
+  // pills
+  const pp = document.getElementById('spec-pills');
+  if (pp) pp.innerHTML = m.pills.map((p,i)=>`<span class="spec-pill${i===0?' hi':''}">${p}</span>`).join('');
+
+  // annotations
+  const aa = document.getElementById('annotations');
+  if (aa) aa.innerHTML = m.anns.map(a=>`<div class="ann${a.active?' active':''}"><div class="ann-dot"></div><span class="ann-text">${a.text}</span></div>`).join('');
+}
+
+// ─────────────────────────────────────────────
+// RENDER
+// ─────────────────────────────────────────────
+function renderRight() {
+  const m = MODELS[state.currentModel];
+  return `
+    <div class="right" style="position:relative">
+      <div class="scan-line"></div>
+      <div class="corners"><div class="c tl"></div><div class="c tr"></div><div class="c bl"></div><div class="c br"></div></div>
+      <div class="video-wrap">
+        <video id="vid" autoplay loop muted playsinline style="display:none">
+          <source id="vid-src" src="${m.video}" type="video/mp4">
+        </video>
+        <div id="vid-placeholder" class="video-placeholder" style="display:flex;flex-direction:column;align-items:center;gap:12px;opacity:0.08">
+          <div class="chair-icon">🪑</div>
+          <div class="placeholder-text">VÍDEO DO PRODUTO</div>
+        </div>
+      </div>
+      <div class="annotations" id="annotations">
+        ${m.anns.map(a=>`<div class="ann${a.active?' active':''}"><div class="ann-dot"></div><span class="ann-text">${a.text}</span></div>`).join('')}
+      </div>
+      <div class="video-bottom">
+        <div class="live-badge"><div class="live-dot"></div><span>Sugestão ao vivo</span></div>
+        <div class="model-name" id="model-name">${m.name}</div>
+        <div class="spec-pills" id="spec-pills">
+          ${m.pills.map((p,i)=>`<span class="spec-pill${i===0?' hi':''}">${p}</span>`).join('')}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderQuiz() {
+  const q = QUESTIONS[state.step];
+  const sel = state.answers[state.step];
+  const pbs = QUESTIONS.map((_,i) => {
+    let cls = '';
+    if (i < state.step) cls = 'done';
+    else if (i === state.step) cls = 'active';
+    return `<div class="pb ${cls}"></div>`;
+  }).join('');
+
+  return `
+    <div class="screen active fade-in">
+      <div class="left">
+        <div class="progress-wrap">
+          <div class="progress-label">Pergunta ${state.step+1} de ${QUESTIONS.length}</div>
+          <div class="progress-bar">${pbs}</div>
+        </div>
+        <div class="layer-tag"><div class="layer-tag-dot"></div><span>${q.layer}</span></div>
+        <div class="question-title">${q.title}</div>
+        <div class="options">
+          ${q.opts.map((o,i)=>`
+            <div class="opt${sel && sel.idx===i?' selected':''}" data-idx="${i}" data-tag="${o.tag}" onclick="selectOpt(this)">
+              <div class="opt-radio"></div>
+              <div class="opt-content">
+                <div class="opt-label">${o.label}</div>
+                <div class="opt-sub">${o.sub}</div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+        <div class="nav-row">
+          ${state.step > 0 ? `<button class="btn-back" onclick="goBack()">← Voltar</button>` : ''}
+          <button class="btn-next" id="btn-next" onclick="goNext()" ${!sel?'disabled':''}>
+            ${state.step < QUESTIONS.length-1 ? 'Próxima pergunta' : 'Ver resultado'}
+            <span class="arrow">→</span>
+          </button>
+        </div>
+      </div>
+      ${renderRight()}
+    </div>
+  `;
+}
+
+function renderResult() {
+  const modelKey = computeModel(state.answers);
+  const m = MODELS[modelKey];
+  const wppMsg = encodeURIComponent(m.wpp_text);
+  const wppUrl = `https://wa.me/554130876852?text=${wppMsg}`;
+
+  return `
+    <div class="screen active fade-in" style="flex-direction:row">
+      <div class="left" style="gap:0">
+        <div class="result-left">
+          <div>
+            <div class="result-eyebrow">Análise concluída</div>
+            <div class="result-title">Sua indicação técnica está pronta</div>
+            <div style="font-size:12px;color:var(--text-muted);margin-top:4px">Baseada em ABNT NBR 13962 · NR-17 · Biotipo brasileiro</div>
+          </div>
+          <div class="result-model-card">
+            <div class="result-model-header">
+              <div class="result-model-icon">${m.icon}</div>
+              <div>
+                <div class="result-model-name">${m.name}</div>
+                <div class="result-model-series">${m.series}</div>
+              </div>
+            </div>
+            <div class="result-model-body">
+              <div class="cert-badges">
+                ${m.certs.map((c,i)=>`<span class="cert ${i===0?'cert-abnt':'cert-nr'}">${c}</span>`).join('')}
+              </div>
+              <ul class="reasons">
+                ${m.reasons.map(r=>`<li>${r}</li>`).join('')}
+              </ul>
+            </div>
+          </div>
+          <div class="cta-block">
+            <a href="${wppUrl}" target="_blank" class="btn-wpp">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+              Ver condições para sua empresa
+            </a>
+            <a href="https://wa.me/554130876852?text=Ol%C3%A1%2C+gostaria+de+agendar+uma+visita+ao+showroom+de+voc%C3%AAs+em+%C3%81gua+Verde." target="_blank" class="btn-showroom">
+              📍 Agendar visita ao showroom
+            </a>
+            <button class="btn-restart" onclick="restart()">Refazer a indicação</button>
+          </div>
+          <div class="footer-trust">
+            <div class="trust-item">📍 Showroom Água Verde — Curitiba</div>
+            <div class="trust-item">📞 (41) 3087-6852</div>
+          </div>
+        </div>
+      </div>
+      ${renderRight()}
+    </div>
+  `;
+}
+
+function render() {
+  const app = document.getElementById('app');
+  if (state.step < QUESTIONS.length) {
+    app.innerHTML = renderQuiz();
+  } else {
+    const modelKey = computeModel(state.answers);
+    state.currentModel = modelKey;
+    app.innerHTML = renderResult();
+  }
+  // tenta carregar vídeo
+  const vid = document.getElementById('vid');
+  if (vid) {
+    vid.onerror = () => {
+      vid.style.display='none';
+      const ph = document.getElementById('vid-placeholder');
+      if(ph) ph.style.display='flex';
+    };
+    vid.oncanplay = () => {
+      vid.style.display='block';
+      const ph = document.getElementById('vid-placeholder');
+      if(ph) ph.style.display='none';
+    };
+    vid.play().catch(()=>{});
+  }
+}
+
+// ─────────────────────────────────────────────
+// INTERACTIONS
+// ─────────────────────────────────────────────
+function selectOpt(el) {
+  const opts = el.closest('.options').querySelectorAll('.opt');
+  opts.forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+
+  const idx = parseInt(el.dataset.idx);
+  const tag = el.dataset.tag;
+  state.answers[state.step] = { idx, tag };
+
+  // unlock next button
+  const btn = document.getElementById('btn-next');
+  if (btn) btn.disabled = false;
+
+  // update right panel preview
+  const preview = computeModel(state.answers);
+  updateRightPanel(state.answers[0] && state.answers[0].tag === 'bari' ? 'bari' : preview);
+}
+
+function goNext() {
+  if (!state.answers[state.step]) return;
+  state.step++;
+  render();
+  window.scrollTo(0,0);
+}
+
+function goBack() {
+  if (state.step > 0) { state.step--; render(); window.scrollTo(0,0); }
+}
+
+function restart() {
+  state = { step: 0, answers: [], currentModel: 'yon', isBari: false };
+  render();
+  window.scrollTo(0,0);
+}
+
+// ─────────────────────────────────────────────
+// INIT
+// ─────────────────────────────────────────────
+render();
+</script>
+</body>
+</html>

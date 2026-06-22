@@ -308,7 +308,7 @@ const MODELS = {
       { text: 'NBR 13962 certificada', active: false },
     ],
     reasons: [
-      'Braço 4D: ajuste em altura, largura, profundidade e ângulo — obrigatório para jornadas acima de 6h e ambientes de call center (NR-17 Anexo II)',
+      'Braço 4D: ajuste em altura, largura, profundidade e ângulo — indicado para jornadas acima de 6h com exigência de NR-17',
       'Mecanismo Syncron com tensão regulável — distribui carga na coluna durante longas jornadas de 8h+',
       'Certificada NBR 13962 pelo SENAI, aceita em licitações e políticas internas de saúde ocupacional',
     ],
@@ -334,11 +334,51 @@ const MODELS = {
     ],
     wpp_text: 'Olá, fiz o quiz de cadeiras e recebi a indicação da Cavaletti Vélo. Gostaria de verificar condições para minha empresa.',
   },
+  artis: {
+    name: 'Cavaletti Artis',
+    series: 'Série Artis · Linha diretiva',
+    icon: '🪑',
+    video: 'artis.mp4',
+    certs: ['Conforme NR-17', 'Garantia 6 anos', 'Prêmio Design Award 2025'],
+    pills: ['Conforme NR-17', '6 anos garantia', 'Design Award 2025', 'Linha diretiva'],
+    anns: [
+      { text: 'Altura ajustável 420–500 mm', active: true },
+      { text: 'Apoio lombar regulável', active: true },
+      { text: 'Prêmio Design Award 2025', active: true },
+      { text: 'Linha diretiva Cavaletti', active: false },
+    ],
+    reasons: [
+      'Projetada em conformidade com a NR-17 — regulagem de altura, lombar e braços para jornadas corporativas',
+      'Linha diretiva: acabamento e ergonomia para cargos de gestão, diretoria e home office de alta performance',
+      'Prêmio Design Award 2025 — reconhecimento internacional por design e inovação em cadeiras corporativas',
+    ],
+    wpp_text: 'Olá, fiz o quiz de cadeiras e recebi a indicação da Cavaletti Artis. Gostaria de verificar condições para minha empresa.',
+  },
+  leef: {
+    name: 'Cavaletti Leef',
+    series: 'Série Leef · Linha diretiva · Design Marc Sapetti',
+    icon: '🪑',
+    video: 'leef.mp4',
+    certs: ['Conforme NR-17', 'Syncron 4 estágios', 'Design suíço-brasileiro'],
+    pills: ['Conforme NR-17', 'Syncron 4 estágios', 'Lombar 280 mm', 'Braço 4D'],
+    anns: [
+      { text: 'Lombar ajustável 280 mm', active: true },
+      { text: 'Assento deslizante 6 estágios', active: true },
+      { text: 'Encosto maleável adaptativo', active: true },
+      { text: 'Braço 4D regulável', active: false },
+    ],
+    reasons: [
+      'Apoio lombar com curso de 280 mm — maior range de ajuste da linha Cavaletti, indicado para jornadas longas e usuários com necessidades posturais específicas',
+      'Encosto com estrutura maleável que se adapta à mudança de posição — ideal para quem alterna entre postura ativa e reclinada ao longo do dia',
+      'Design autoral Marc Sapetti (estúdio suíço-brasileiro multipremiado) — posiciona ambientes de diretoria e home office com identidade contemporânea',
+    ],
+    wpp_text: 'Olá, fiz o quiz de cadeiras e recebi a indicação da Cavaletti Leef. Gostaria de verificar condições para minha empresa.',
+  },
   bari: {
-    name: 'Solução Especial Bariatrica',
+    name: 'Linha Bariatrica Cavaletti',
     series: 'Conforme ABNT NBR 9050:2020',
     icon: '🪑',
-    video: 'yon.mp4', // sem vídeo específico — usa Yon como visual
+    video: 'yon.mp4',
     certs: ['NBR 9050 ✓', 'Até 250 kg', 'Laudo INMETRO'],
     pills: ['NBR 9050 ✓', 'Até 250 kg', 'Base reforçada 80 cm', 'Laudo INMETRO'],
     anns: [
@@ -352,7 +392,7 @@ const MODELS = {
       'Capacidade de carga mínima de 250 kg com laudo técnico em laboratório credenciado pelo INMETRO — não apenas estrutura reforçada',
       'Projeto mecânico e ergonômico específico para morfologia de usuários com sobrepeso: encosto não reclinável por segurança, braços móveis em 6 posições',
     ],
-    wpp_text: 'Olá, fiz o quiz de cadeiras e preciso de cadeiras para usuários acima de 110 kg (linha especial NBR 9050). Gostaria de verificar condições e modelos disponíveis.',
+    wpp_text: 'Olá, fiz o quiz de cadeiras e recebi a indicação da Linha Bariatrica. Gostaria de verificar condições e modelos disponíveis para minha empresa.',
   },
 };
 
@@ -362,7 +402,7 @@ const QUESTIONS = [
     title: 'Qual o porte predominante dos colaboradores que vão usar as cadeiras?',
     opts: [
       { label: 'Biotipo padrão', sub: 'Altura 1,52–1,92 m · Até 110 kg · Maioria dos usuários', tag: 'std' },
-      { label: 'Usuários acima de 110 kg', sub: 'Exige solução especial NBR 9050 — nosso consultor indica o modelo certo', tag: 'bari' },
+      { label: 'Usuários acima de 110 kg', sub: 'Exige linha bariatrica — ABNT NBR 9050, não NBR 13962', tag: 'bari' },
       { label: 'Equipe mista', sub: 'Mix de biotipos — recomendaremos o modelo com maior range de ajuste', tag: 'std' },
     ]
   },
@@ -381,9 +421,9 @@ const QUESTIONS = [
     title: 'Qual o ambiente e tipo de trabalho predominante?',
     opts: [
       { label: 'Escritório corporativo', sub: 'Gestores, analistas, administrativo', tag: 'office' },
-      { label: 'Call center / telemarketing', sub: 'Aplica NBR 15786 + NR-17 Anexo II: braço ajustável obrigatório', tag: 'call' },
+
       { label: 'Home office', sub: 'Uso residencial, jornada variável', tag: 'home' },
-      { label: 'Diretoria / salas executivas', sub: 'Cadeiras de alta performance e design', tag: 'exec' },
+      { label: 'Diretoria / salas executivas', sub: 'Alta performance, design e identidade — Artis ou Leef', tag: 'exec' },
     ]
   },
   {
@@ -409,8 +449,6 @@ function computeModel(answers) {
   if (!answers.length) return 'yon';
   // Bariatrico?
   if (answers[0] && answers[0].tag === 'bari') return 'bari';
-  // Call center: Yon (braço 4D obrigatório)
-  if (answers[2] && answers[2].tag === 'call') return 'yon';
   // Jornada
   const jornada = answers[1] ? answers[1].tag : null;
   const uso = answers[2] ? answers[2].tag : null;
